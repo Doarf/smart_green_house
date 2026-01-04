@@ -14,7 +14,7 @@
 
 // DHT
 #define DHTPIN   4
-#define DHTTYPE  DHT22      // mets DHT11 si tu as un DHT11
+#define DHTTYPE  DHT22      
 DHT dht(DHTPIN, DHTTYPE);
 
 // DS18B20 (OneWire)
@@ -27,7 +27,7 @@ DallasTemperature ds18b20(&oneWire);
 
 // Ultrason
 const int trig_pin = 5;
-const int echo_pin = 19;   // (18 est utilisé par SPI SCK)
+const int echo_pin = 19;  
 
 // ST7735 (SPI)
 #define TFT_CS   15
@@ -48,9 +48,9 @@ float ds_t  = NAN;
 int   moisture_raw = 0;
 float distance_cm = NAN;
 
-// Pour ne pas lire le DHT trop souvent (surtout DHT22)
+
 unsigned long lastDhtMs = 0;
-const unsigned long DHT_PERIOD_MS = 2000; // 2s conseillé pour DHT22
+const unsigned long DHT_PERIOD_MS = 2000; 
 
 // ===================== FONCTIONS CAPTEURS =====================
 void readDHT() {
