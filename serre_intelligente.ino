@@ -12,9 +12,9 @@
 
 // ===================== PINS =====================
 
-// DHT22
+// DHT
 #define DHTPIN   4
-#define DHTTYPE  DHT22
+#define DHTTYPE  DHT22      // mets DHT11 si tu as un DHT11
 DHT dht(DHTPIN, DHTTYPE);
 
 // DS18B20 (OneWire)
@@ -27,7 +27,7 @@ DallasTemperature ds18b20(&oneWire);
 
 // Ultrason
 const int trig_pin = 5;
-const int echo_pin = 19;   // <- déplacé (18 est utilisé par SPI SCK)
+const int echo_pin = 19;   // (18 est utilisé par SPI SCK)
 
 // ST7735 (SPI)
 #define TFT_CS   15
@@ -36,7 +36,6 @@ const int echo_pin = 19;   // <- déplacé (18 est utilisé par SPI SCK)
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
 // ===================== CONSTANTES =====================
-#define SOUND_SPEED 340.0f
 #define TRIG_PULSE_DURATION_US 10
 
 // Couleurs custom (RGB565)
@@ -49,12 +48,31 @@ float ds_t  = NAN;
 int   moisture_raw = 0;
 float distance_cm = NAN;
 
+// Pour ne pas lire le DHT trop souvent (surtout DHT22)
+unsigned long lastDhtMs = 0;
+const unsigned long DHT_PERIOD_MS = 2000; // 2s conseillé pour DHT22
+
 // ===================== FONCTIONS CAPTEURS =====================
-void readDHT22() {
-  dht_h = dht.readHumidity();
-  dht_t = dht.readTemperature();
-    Serial.print("DHT22 H: "); Serial.print(dht_h); Serial.print("%  ");
-    Serial.print("T: "); Serial.print(dht_t); Serial.println("C");
+void readDHT() {
+  // DHT22 : évite de lire trop vite
+  if (millis() - lastDhtMs < DHT_PERIOD_MS) return;
+  lastDhtMs = millis();
+
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+
+  if (isnan(h) || isnan(t)) {
+    dht_h = NAN;
+    dht_t = NAN;
+    Serial.println("Probleme capteur DHT");
+    return;
+  }
+
+  dht_h = h;
+  dht_t = t;
+
+  Serial.print("DHT H: "); Serial.print(dht_h, 1); Serial.print("%  ");
+  Serial.print("T: "); Serial.print(dht_t, 1); Serial.println("C");
 }
 
 void readDS18B20() {
@@ -62,7 +80,7 @@ void readDS18B20() {
   ds_t = ds18b20.getTempCByIndex(0);
 
   Serial.print("DS18B20: ");
-  Serial.print(ds_t);
+  Serial.print(ds_t, 2);
   Serial.println("C");
 }
 
@@ -72,33 +90,26 @@ void readMoisture() {
   Serial.println(moisture_raw);
 }
 
-void readUltrason() {
-  // Impulsion TRIG
+float readUltrasonCM() {
   digitalWrite(trig_pin, LOW);
-  delayMicroseconds(2);
+  delayMicroseconds(4);
+  unsigned long t0 = millis();
+  while (digitalRead(echo_pin) == HIGH) {
+    if (millis() - t0 > 20) return NAN;
+  }
   digitalWrite(trig_pin, HIGH);
   delayMicroseconds(TRIG_PULSE_DURATION_US);
   digitalWrite(trig_pin, LOW);
 
-  // pulseIn en microsecondes (timeout 30ms = ~5m max)
+  // mesure avec timeout (30ms)
   unsigned long duration = pulseIn(echo_pin, HIGH, 30000);
+  if (duration == 0) return NAN;
 
-  if (duration == 0) {
-    distance_cm = NAN; // pas de retour
-  } else {
-    // distance = (duration_us * vitesse_son(m/s)) / 2
-    // Convertir en cm : duration_us * 1e-6 s/us * 100 cm/m
-    distance_cm = (duration * (SOUND_SPEED * 100.0f) * 1e-6f) / 2.0f;
-  }
-
-  Serial.print("Distance: ");
-  Serial.print(distance_cm); 
-  Serial.println(" cm"); 
+  // conversion (µs -> cm) : 0.0343 cm/us
+  return (duration * 0.0343f) / 2.0f;
 }
 
 // ===================== AFFICHAGE ECRAN =====================
-
-// Petite fonction pour afficher une valeur à droite sans dépasser
 void printRightValue(int x, int y, const String &txt, uint16_t color) {
   tft.setTextColor(color);
   tft.setCursor(x, y);
@@ -120,22 +131,21 @@ void drawScreen() {
 
   // Colonnes
   const int xLabel = 6;
-  const int xValue = 74;   // valeurs alignées à droite (dans l’idée)
+  const int xValue = 74;
   int y = 28;
 
+  // --- DHT Humidite
   tft.setTextColor(ST77XX_WHITE);
-
-  // --- DHT22 Humidite
   tft.setCursor(xLabel, y);
-  tft.print("DHT22 H:");
+  tft.print("DHT H:");
   if (isnan(dht_h)) printRightValue(xValue, y, "--", ST77XX_CYAN);
   else             printRightValue(xValue, y, String(dht_h, 1) + "%", ST77XX_CYAN);
 
-  // --- DHT22 Temperature
+  // --- DHT Temperature
   y += 14;
   tft.setTextColor(ST77XX_WHITE);
   tft.setCursor(xLabel, y);
-  tft.print("DHT22 T:");
+  tft.print("DHT T:");
   if (isnan(dht_t)) printRightValue(xValue, y, "--", ST77XX_CYAN);
   else              printRightValue(xValue, y, String(dht_t, 1) + "C", ST77XX_CYAN);
 
@@ -162,7 +172,7 @@ void drawScreen() {
   if (isnan(distance_cm)) printRightValue(xValue, y, "--", ST77XX_CYAN);
   else                   printRightValue(xValue, y, String(distance_cm, 0) + "cm", ST77XX_CYAN);
 
-  // Petit pied de page
+  // Pied de page
   tft.drawFastHLine(1, 150, 126, DARKGREY);
   tft.setTextColor(GREY);
   tft.setCursor(6, 154);
@@ -183,21 +193,24 @@ void setup() {
   pinMode(echo_pin, INPUT);
 
   // Ecran
-  // Si ton affichage a des couleurs bizarres : essaie INITR_GREENTAB ou INITR_REDTAB
-  tft.initR(INITR_BLACKTAB);
-  tft.setRotation(1); // 0/1/2/3 selon l'orientation voulue
+  tft.initR(INITR_BLACKTAB);    
+  tft.setRotation(1);
   tft.fillScreen(ST77XX_BLACK);
 
   drawScreen();
 }
 
 void loop() {
-  readDHT22();
+  readDHT();
   readDS18B20();
   readMoisture();
-  readUltrason();
+  distance_cm = readUltrasonCM();
+
+  // Logs distance
+  Serial.print("Distance: ");
+  if (isnan(distance_cm)) Serial.println("nan cm");
+  else { Serial.print(distance_cm, 1); Serial.println(" cm"); }
 
   drawScreen();
-
-  delay(1000);
+  delay(500);   
 }
