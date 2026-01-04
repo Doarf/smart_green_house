@@ -1,16 +1,16 @@
 # smart_green_house
 
-This project aims to design and build a smart mini-greenhouse using an embedded microcontroller system (ESP32).  The system autonomously monitors and controls environmental conditions such as soil moisture, air temperature, and, optionally, light intensity, to maintain optimal growing conditions for the plants.
+Ce projet vise à concevoir et construire une mini-serre intelligente à l'aide d'un système de microcontrôleur embarqué (ESP32). Ce système surveille et contrôle de manière autonome les conditions environnementales telles que l'humidité du sol, la température de l'air et, en option, l'intensité lumineuse, afin de maintenir des conditions de croissance optimales pour les plantes.
 
-Using environmental sensors, the system collects data and makes decisions based on configurable thresholds. It can automatically activate irrigation (pump) and, optionally, lighting (LEDs) to regulate the internal environment
+Grâce à des capteurs environnementaux, le système collecte des données et prend des décisions en fonction de seuils configurables. Il peut activer automatiquement l'irrigation (pompe) et, en option, l'éclairage (LED) pour réguler l'environnement intérieur.
 
 | Component                      | Function                                                               |
 | ------------------------------ | ---------------------------------------------------------------------- |
-| **ESP32**                      | Main microcontroller (Wi-Fi, GPIO, ADC, UART, I2C)                     |
-| **DHT22**                      | Measures ambient temperature and humidity                              |
-| **DS18B20**                    | Measures soil temperature (waterproof digital sensor)                  |
-| **OLED I2C Display (SSD1306)** | Real-time display of sensor readings and system status                 |
-| **3 Push Buttons**             | Manual control (mode selection, threshold adjustment, manual watering) |
-| **12V Water Pump**             | Automated irrigation system                                            |
-| **Relay Module**               | Controls the 12V pump securely from the ESP32                          |
-| **Power Supply (5V/12V)**      | Powers ESP32 and pump                                                  |
+| **ESP32**                      | Microcontrôleur (Wi-Fi, GPIO, ADC, UART, I2C)                          |
+| **DHT22**                      | Capteur de température et d'humidité (ambiant)                         |
+| **DS18B20**                    | Capteur de température (terre)                                         |
+| **OLED I2C Display (SSD1306)** | Ecran oled en I2C                                                      |
+| **3 Boutons     **             | Bouton pour controler la serre                                         |
+| **12V Pompe à eau**            | Automatisé l'eau pour la terre                                         |
+| **Relay Module**               | Pour controler la pompe à eau                                          |
+| **Power Supply (5V)**          | Alimenter l'ESP32 et la pompe à eau                                    |
