@@ -13,4 +13,3 @@ Using environmental sensors, the system collects data and makes decisions based 
 | **12V Water Pump**              | Automatic plant irrigation                   |
 | **Relay Module**                | Controls the water pump                      |
 | **5V Power Supply**             | Powers the ESP32 and peripherals             |
-|
