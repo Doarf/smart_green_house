@@ -1,13 +1,15 @@
 # smart_green_house
-This project aims to design and build a smart mini-greenhouse using an ESP32 embedded microcontroller. 
 
-| **Component**                   | **Function**                                 |
-| ------------------------------- | -------------------------------------------- |
-| **ESP32**                       | Main microcontroller (Wi-Fi, GPIO, ADC, I2C) |
-| **DHT22**                       | Air temperature and humidity sensing         |
-| **DS18B20**                     | Soil temperature sensing                     |
-| **ST7735** | Displays environmental data                  |
-| **Push Buttons**                | User interface and system control            |
-| **12V Water Pump**              | Automatic plant irrigation                   |
-| **Relay Module**                | Controls the water pump                      |
-| **5V Power Supply**             | Powers the ESP32 and peripherals             |
+Ce projet vise à concevoir et construire une mini-serre intelligente à l’aide d’un microcontrôleur embarqué ESP32.
+
+| **Composant**                   | **Fonction**                                              |
+| ------------------------------- | --------------------------------------------------------- |
+| **ESP32**                       | Microcontrôleur principal (Wi-Fi, GPIO, ADC, I2C)         |
+| **DHT22**                       | Mesure de la température et de l’humidité de l’air         |
+| **DS18B20**                     | Mesure de la température du sol                           |
+| **ST7735**                      | Affiche les données environnementales                     |
+| **Boutons poussoirs**           | Interface utilisateur et contrôle du système              |
+| **Pompe à eau 5 V**             | Arrosage automatique des plantes                          |
+| **Module relais**               | Contrôle/commande de la pompe à eau                       |
+| **Alimentation 5 V**            | Alimente l’ESP32 et les périphériques                     |
+| **LED 5 V**                     | Éclairage du système 
