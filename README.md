@@ -1,7 +1,5 @@
 # smart_green_house
-This project aims to design and build a smart mini-greenhouse using an ESP32 embedded microcontroller. The system autonomously monitors and controls environmental conditions such as soil moisture, air temperature, and optionally light intensity, in order to maintain optimal plant growth conditions.
-
-Using environmental sensors, the system collects data and makes decisions based on configurable thresholds. It can automatically control irrigation (water pump) and optionally lighting (LED) to regulate the greenhouse environment.
+This project aims to design and build a smart mini-greenhouse using an ESP32 embedded microcontroller. 
 
 | **Component**                   | **Function**                                 |
 | ------------------------------- | -------------------------------------------- |
