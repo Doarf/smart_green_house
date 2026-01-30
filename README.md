@@ -6,7 +6,7 @@ This project aims to design and build a smart mini-greenhouse using an ESP32 emb
 | **ESP32**                       | Main microcontroller (Wi-Fi, GPIO, ADC, I2C) |
 | **DHT22**                       | Air temperature and humidity sensing         |
 | **DS18B20**                     | Soil temperature sensing                     |
-| **OLED Display (SSD1306, I2C)** | Displays environmental data                  |
+| **ST7735** | Displays environmental data                  |
 | **Push Buttons**                | User interface and system control            |
 | **12V Water Pump**              | Automatic plant irrigation                   |
 | **Relay Module**                | Controls the water pump                      |
